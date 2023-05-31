@@ -13,25 +13,28 @@ import java.util.Set;
 @Table
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
-public class RoadmapDetail {
+@ToString
+public class TopicDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private String name;
+    private String link;
     private Instant dateCreated;
+    private Instant dateFinished;
     private Integer generalRating;
-    private Integer averageCompletionDays;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "roadmapDetail")
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    private Category category;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "topicDetail",
+            orphanRemoval = true)
     @ToString.Exclude
-    private List<Roadmap> roadmapList;
+    private List<Topic> topic;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "milestone_detail_roadmap_detail",
-            joinColumns = @JoinColumn(name = "milestone_detail_id"),
-            inverseJoinColumns = @JoinColumn(name = "roadmap_detail_id"))
+    @ManyToMany(mappedBy = "topicDetailSet")
     @ToString.Exclude
     private Set<MilestoneDetail> milestoneDetailSet;
 
@@ -39,7 +42,7 @@ public class RoadmapDetail {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        RoadmapDetail that = (RoadmapDetail) o;
+        TopicDetail that = (TopicDetail) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

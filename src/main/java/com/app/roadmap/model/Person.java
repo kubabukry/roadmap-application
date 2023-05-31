@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,22 +13,30 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class User {
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String login;
     private String email;
     private String password;
+
     @Enumerated(EnumType.STRING)
     private Role role;
     private String job;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            mappedBy = "person")
+    @ToString.Exclude
+    private List<Roadmap> roadmapList;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
+        Person user = (Person) o;
         return getId() != null && Objects.equals(getId(), user.getId());
     }
 

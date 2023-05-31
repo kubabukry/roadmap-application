@@ -13,23 +13,27 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Milestone {
+public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Instant timeStarted;
-    private Instant timeFinished;
-    private Integer progressPercent;
 
+    private Boolean idDone;
+    private Instant dateStarted;
+    private Instant dateFinished;
+    private Integer userRating;
+    private String notes;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Milestone milestone;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    private Roadmap roadmap;
-
+    private TopicDetail topicDetail;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Milestone milestone = (Milestone) o;
-        return getId() != null && Objects.equals(getId(), milestone.getId());
+        Topic topic = (Topic) o;
+        return getId() != null && Objects.equals(getId(), topic.getId());
     }
 
     @Override
